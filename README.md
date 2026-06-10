@@ -1,58 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Order API – Task 1
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Project ini merupakan implementasi API sederhana untuk membuat order dengan multiple items, sekaligus menangani race condition pada pengurangan stock.
 
-## About Laravel
+Features
+- Buat produk
+- Buat order dengan multiple items
+- Validasi stock sebelum pembelian
+- Otomatis mengurangi stock
+- Generate nomor order (no_order)
+- Menggunakan UUID sebagai identifier publik
+- Mencegah overselling (race condition safe)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Concurrency Handling
+Untuk mencegah race condition (overselling), digunakan:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. Database Transaction
+Semua proses dibungkus dalam transaction agar operasi basis data diproses secara utuh.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. Pessimistic Locking
+Digunakan untuk mengunci row product saat proses order berlangsung.
 
-## Learning Laravel
+Dengan pendekatan ini:
+- Tidak ada stock minus
+- Tidak ada double order pada stock terbatas
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Testing
+Functional test dibuat untuk memastikan behavior sistem:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Covered Test Cases
+- Create order success (multi item)
+- Race condition prevention (no overselling)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Race Condition Test
+Dilakukan dengan mensimulasikan dua request berurutan pada stock terbatas.
 
-## Agentic Development
+Hasil yang diinginkan:
+- Hanya 1 request yang berhasil
+- Stock tidak menjadi negatif
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Hidden Item Game - Task 2
+Program berbasis Command-Line Interface (CLI) untuk mensimulasikan pencarian koordinat item tersembunyi di dalam matriks grid berukuran 6x8 dengan halangan.
 
-```bash
-composer require laravel/boost --dev
+Spesifikasi Pergerakan
+Menggunakan koordinat baris dan kolom yang dimulai dari indeks [4][1] (Posisi awal X). Pemain bergerak dengan urutan parameter:
+- Utara / Up (A): Mengurangi indeks baris.
+- Timur / East (B): Menambah indeks kolom.
+- Selatan / South (C): Menambah indeks baris.
+Jika rute menabrak dinding (#), pergerakan digagalkan. Jika berhasil mencapai titik aman (.), koordinat akhir akan ditampilkan beserta representasi visual grid yang menandai posisi item dengan simbol $.
 
-php artisan boost:install
-```
+Tech Stack
+- Laravel
+- MySQL
+- PHPUnit
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+How to Run
+- git clone https://github.com/akbarardi/flash-sale-service.git
+- cd flash-sale-service
+- composer install
+- cp .env.example .env
+- php artisan key:generate
+- php artisan migrate
+- php artisan db:seed
+- php artisan serve
 
-## Contributing
+Run Test
+- php artisan test
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Run Hidden Item Game
+php artisan game:search {A} {B} {C}
