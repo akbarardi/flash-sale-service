@@ -46,6 +46,7 @@ Menggunakan koordinat baris dan kolom yang dimulai dari indeks [4][1] (Posisi aw
 - Utara / Up (A): Mengurangi indeks baris.
 - Timur / East (B): Menambah indeks kolom.
 - Selatan / South (C): Menambah indeks baris.
+
 Jika rute menabrak dinding (#), pergerakan digagalkan. Jika berhasil mencapai titik aman (.), koordinat akhir akan ditampilkan beserta representasi visual grid yang menandai posisi item dengan simbol $.
 
 Tech Stack
